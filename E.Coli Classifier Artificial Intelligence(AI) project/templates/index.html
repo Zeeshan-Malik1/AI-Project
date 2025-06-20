@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧬 Enhanced E. coli Promoter Classifier</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3a0ca3;
+        --accent: #4895ef;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --light: #f8f9ff;
+        --dark: #14213d;
+        --dna-blue: #4361ee;
+        --dna-purple: #7209b7;
+        --card-bg: #ffffff;
+        --body-bg: #f0f8ff;
+        --header-bg: #e3f2fd;
+        --border: #d1e0f0;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: var(--body-bg);
+        color: #333;
+        min-height: 100vh;
+        padding-bottom: 2rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .header-section {
+        text-align: center;
+        padding: 2.5rem 0;
+        background: linear-gradient(135deg, var(--header-bg), #d4e4f7);
+        border-radius: 18px;
+        margin: 2rem auto;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border);
+      }
+
+      .header-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(114, 9, 183, 0.05),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .display-4 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--dna-blue), var(--dna-purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 1.2rem;
+        text-shadow: 0 2px 8px rgba(72, 149, 239, 0.15);
+        position: relative;
+      }
+
+      .lead {
+        font-size: 1.3rem;
+        color: #4a5568;
+        max-width: 700px;
+        margin: 0 auto 1.5rem;
+      }
+
+      .dna-gif {
+        width: 100%;
+        max-width: 500px;
+        height: 180px;
+        margin: 1.5rem auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        background: linear-gradient(45deg, #e0f0ff, #f0f8ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: float 6s infinite ease-in-out;
+      }
+
+      .dna-gif::before {
+        position: absolute;
+        color: var(--dna-blue);
+        font-weight: 500;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.8rem;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(67, 97, 238, 0.15);
+        border-color: var(--accent);
+      }
+
+      .card-header {
+        background: linear-gradient(
+          to right,
+          rgba(67, 97, 238, 0.08),
+          rgba(58, 12, 163, 0.06)
+        );
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.15rem;
+        color: var(--dark);
+      }
+
+      .sequence-input {
+        font-family: "Courier New", monospace;
+        font-size: 15px;
+        background: #ffffff;
+        color: #2d3748;
+        border: 1px solid #cbd5e0;
+        padding: 0.9rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .sequence-input:focus {
+        background: #ffffff;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 0.2rem rgba(72, 149, 239, 0.15);
+        color: #2d3748;
+      }
+
+      .form-text {
+        color: #718096;
+      }
+
+      .btn {
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 0.7rem 1.4rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+        border: none;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+      }
+
+      .btn-outline-secondary {
+        background: transparent;
+        border: 1px solid var(--dna-blue);
+        color: var(--dna-blue);
+      }
+
+      .btn-outline-secondary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(67, 97, 238, 0.1),
+          rgba(58, 12, 163, 0.08)
+        );
+      }
+
+      .btn-outline-info {
+        background: transparent;
+        border: 1px solid var(--dna-purple);
+        color: var(--dna-purple);
+      }
+
+      .btn-outline-info:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(114, 9, 183, 0.1),
+          rgba(72, 149, 239, 0.08)
+        );
+      }
+
+      .metric-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        height: 100%;
+        background: var(--card-bg);
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(114, 9, 183, 0.12);
+        border: 1px solid var(--accent);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nucleotide {
+        color: var(--dna-blue);
+        font-weight: bold;
+      }
+
+      .motif-display {
+        font-family: "Courier New", monospace;
+        background: linear-gradient(
+          135deg,
+          rgba(67, 97, 238, 0.1),
+          rgba(58, 12, 163, 0.08)
+        );
+        padding: 0.35rem 0.7rem;
+        border-radius: 8px;
+        margin: 0.15rem;
+        display: inline-block;
+        border: 1px solid var(--border);
+        font-weight: bold;
+        color: var(--dna-blue);
+        transition: all 0.2s ease;
+      }
+
+      .motif-display:hover {
+        transform: scale(1.05);
+        background: linear-gradient(
+          135deg,
+          rgba(67, 97, 238, 0.15),
+          rgba(58, 12, 163, 0.12)
+        );
+      }
+
+      .confidence-bar {
+        height: 10px;
+        border-radius: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--danger) 0%,
+          #ffb703 50%,
+          var(--success) 100%
+        );
+        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .composition-stats {
+        font-size: 0.95em;
+        color: #4a5568;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .feature-highlight {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.8),
+          rgba(240, 248, 255, 0.8)
+        );
+        border-left: 4px solid var(--accent);
+        padding: 1.2rem;
+        margin: 1.2rem 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        animation: fadeIn 0.8s ease;
+      }
+
+      .progress {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        height: 10px;
+        box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .progress-bar {
+        border-radius: 8px;
+      }
+
+      .badge {
+        font-weight: 600;
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+      }
+
+      .alert {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: none;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding: 1.5rem 0;
+        text-align: center;
+        color: #718096;
+        font-size: 0.9rem;
+        border-top: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 14px;
+      }
+
+      .modal-content {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .table {
+        color: #2d3748;
+        --bs-table-bg: transparent;
+      }
+
+      .table-hover tbody tr:hover {
+        background: rgba(72, 149, 239, 0.06);
+      }
+
+      .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: rgba(240, 248, 255, 0.5);
+      }
+
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(72, 149, 239, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 12px rgba(72, 149, 239, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(72, 149, 239, 0);
+        }
+      }
+
+      .floating {
+        animation: floating 4s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .visualization-img {
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+        max-width: 100%;
+      }
+
+      .visualization-img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .stat-badge {
+        background: linear-gradient(
+          135deg,
+          rgba(67, 97, 238, 0.1),
+          rgba(58, 12, 163, 0.08)
+        );
+        color: var(--dna-blue);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .nucleotide-stat {
+        font-weight: 600;
+        color: var(--dna-blue);
+      }
+
+      @media (max-width: 768px) {
+        .display-4 {
+          font-size: 2.2rem;
+        }
+
+        .lead {
+          font-size: 1.1rem;
+        }
+
+        .dna-gif {
+          height: 140px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <div class="header-section floating">
+        <h1 class="display-4">🧬 Enhanced E. coli Promoter Classifier</h1>
+        <div class="dna-gif">
+          <img
+            src="{{ url_for('static', filename='images/p1.gif') }}"
+            alt="DNA Animation"
+          />
+        </div>
+
+        <p class="lead">Advanced Machine Learning for DNA Sequence Analysis</p>
+      </div>
+
+      <!-- Enhanced Input Form -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-dna me-2"></i> Sequence Prediction
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Single Sequence Prediction -->
+          <form method="post">
+            <div class="mb-3">
+              <label class="form-label fw-medium"
+                >DNA Sequence (57 nucleotides: A, C, G, T)</label
+              >
+              <input
+                type="text"
+                class="form-control sequence-input"
+                name="user_sequence"
+                maxlength="57"
+                minlength="57"
+                pattern="[ACGTacgt]{57}"
+                id="sequenceInput"
+                placeholder="Enter 57-character DNA sequence..."
+                value="{{ user_sequence if user_sequence else '' }}"
+              />
+              <div class="form-text mt-2">
+                Example:
+                TACTAGCAATACGCTTGCGTTCGGTGGTTAAGTATGTATAATGCGCGGGCTTGTCGT
+                <br /><span id="sequenceCounter" class="text-muted"
+                  >0/57 characters</span
+                >
+              </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <button type="submit" class="btn btn-primary pulse-animation">
+                <i class="fas fa-rocket me-2"></i>Predict Single
+              </button>
+              <a href="/examples" class="btn btn-outline-secondary"
+                ><i class="fas fa-list me-2"></i>View Examples</a
+              >
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-bs-toggle="modal"
+                data-bs-target="#batchModal"
+              >
+                <i class="fas fa-chart-bar me-2"></i>Batch Predict
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Enhanced Prediction Results - Only shown after form submission -->
+      {% if show_results %}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-bullseye me-2"></i> Prediction Results
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Model Predictions -->
+          <div class="row g-3 mb-4">
+            {% if user_prediction and not user_prediction.error %}
+            <!-- SVM Results -->
+            <div class="col-lg-3 col-md-6">
+              <div class="card metric-card h-100">
+                <div class="card-body text-center">
+                  <h6>SVM</h6>
+                  <span class="badge bg-{{ 'success' if user_prediction.predictions['SVM'] == '+' else 'danger' }} fs-6">
+                    {{ 'Promoter' if user_prediction.predictions['SVM'] == '+' else 'Non-Promoter' }}
+                  </span>
+
+                  <!-- Confidence Bar -->
+                  <div class="mt-3">
+                    <small class="text-muted">Confidence: {{ (user_prediction.confidences['SVM'] * 100)|round(1) }}%</small>
+                    <div class="progress mt-2">
+                      <div
+                        class="progress-bar bg-{{ 'success' if user_prediction.predictions['SVM'] == '+' else 'danger' }}"
+                        style="width: {{ user_prediction.confidences['SVM'] * 100 }}%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 small">
+                    <div>Promoter: {{ (user_prediction.probabilities['SVM']['+'] * 100)|round(1) }}%</div>
+                    <div>Non-Promoter: {{ (user_prediction.probabilities['SVM']['-'] * 100)|round(1) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Random Forest Results -->
+            <div class="col-lg-3 col-md-6">
+              <div class="card metric-card h-100">
+                <div class="card-body text-center">
+                  <h6>Random Forest</h6>
+                  <span class="badge bg-{{ 'success' if user_prediction.predictions['Random Forest'] == '+' else 'danger' }} fs-6">
+                    {{ 'Promoter' if user_prediction.predictions['Random Forest'] == '+' else 'Non-Promoter' }}
+                  </span>
+
+                  <!-- Confidence Bar -->
+                  <div class="mt-3">
+                    <small class="text-muted">Confidence: {{ (user_prediction.confidences['Random Forest'] * 100)|round(1) }}%</small>
+                    <div class="progress mt-2">
+                      <div
+                        class="progress-bar bg-{{ 'success' if user_prediction.predictions['Random Forest'] == '+' else 'danger' }}"
+                        style="width: {{ user_prediction.confidences['Random Forest'] * 100 }}%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 small">
+                    <div>Promoter: {{ (user_prediction.probabilities['Random Forest']['+'] * 100)|round(1) }}%</div>
+                    <div>Non-Promoter: {{ (user_prediction.probabilities['Random Forest']['-'] * 100)|round(1) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Naive Bayes Results -->
+            <div class="col-lg-3 col-md-6">
+              <div class="card metric-card h-100">
+                <div class="card-body text-center">
+                  <h6>Naive Bayes</h6>
+                  <span class="badge bg-{{ 'success' if user_prediction.predictions['Naive Bayes'] == '+' else 'danger' }} fs-6">
+                    {{ 'Promoter' if user_prediction.predictions['Naive Bayes'] == '+' else 'Non-Promoter' }}
+                  </span>
+
+                  <!-- Confidence Bar -->
+                  <div class="mt-3">
+                    <small class="text-muted">Confidence: {{ (user_prediction.confidences['Naive Bayes'] * 100)|round(1) }}%</small>
+                    <div class="progress mt-2">
+                      <div
+                        class="progress-bar bg-{{ 'success' if user_prediction.predictions['Naive Bayes'] == '+' else 'danger' }}"
+                        style="width: {{ user_prediction.confidences['Naive Bayes'] * 100 }}%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 small">
+                    <div>Promoter: {{ (user_prediction.probabilities['Naive Bayes']['+'] * 100)|round(1) }}%</div>
+                    <div>Non-Promoter: {{ (user_prediction.probabilities['Naive Bayes']['-'] * 100)|round(1) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ensemble Results -->
+            <div class="col-lg-3 col-md-6">
+              <div class="card metric-card h-100">
+                <div class="card-body text-center">
+                  <h6>
+                    Ensemble
+                    <span class="badge bg-warning text-dark">Best</span>
+                  </h6>
+                  <span class="badge bg-{{ 'success' if user_prediction.predictions['Ensemble'] == '+' else 'danger' }} fs-6">
+                    {{ 'Promoter' if user_prediction.predictions['Ensemble'] == '+' else 'Non-Promoter' }}
+                  </span>
+
+                  <!-- Confidence Bar -->
+                  <div class="mt-3">
+                    <small class="text-muted">Confidence: {{ (user_prediction.confidences['Ensemble'] * 100)|round(1) }}%</small>
+                    <div class="progress mt-2">
+                      <div
+                        class="progress-bar bg-{{ 'success' if user_prediction.predictions['Ensemble'] == '+' else 'danger' }}"
+                        style="width: {{ user_prediction.confidences['Ensemble'] * 100 }}%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 small">
+                    <div>Promoter: {{ (user_prediction.probabilities['Ensemble']['+'] * 100)|round(1) }}%</div>
+                    <div>Non-Promoter: {{ (user_prediction.probabilities['Ensemble']['-'] * 100)|round(1) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-4">
+              <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ user_prediction.error if user_prediction else 'Prediction failed' }}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+          {% if user_prediction and not user_prediction.error %}
+          <!-- Sequence Analysis -->
+          <div class="feature-highlight">
+            <div class="row">
+              <div class="col-md-6">
+                <h6><i class="fas fa-dna me-2"></i> Sequence Composition</h6>
+                <div class="composition-stats">
+                  <div>
+                    GC Content: <strong class="nucleotide-stat">{{ user_prediction.composition.GC_content|round(1) }}%</strong>
+                  </div>
+                  <div>
+                    AT Content: <strong class="nucleotide-stat">{{ user_prediction.composition.AT_content|round(1) }}%</strong>
+                  </div>
+                  <div class="mt-2">
+                    A: <strong class="nucleotide-stat">{{ user_prediction.composition.A_content|round(1) }}%</strong> | T:
+                    <strong class="nucleotide-stat">{{ user_prediction.composition.T_content|round(1) }}%</strong> | G:
+                    <strong class="nucleotide-stat">{{ user_prediction.composition.G_content|round(1) }}%</strong> | C:
+                    <strong class="nucleotide-stat">{{ user_prediction.composition.C_content|round(1) }}%</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h6><i class="fas fa-project-diagram me-2"></i> Clustering</h6>
+                <div class="composition-stats">
+                  <div>
+                    Assigned to Cluster:
+                    <strong class="nucleotide-stat">Group {{ user_prediction.cluster }}</strong>
+                  </div>
+                  <small class="text-muted"
+                    >Based on sequence similarity patterns</small
+                  >
+                  <div class="mt-2">
+                    {% if user_prediction.predictions['Ensemble'] == '+' %}
+                    <span class="badge bg-info">Promoter Signature</span>
+                    {% else %}
+                    <span class="badge bg-info">Non-Promoter Pattern</span>
+                    {% endif %}
+                    {% if user_prediction.composition.GC_content > 50 %}
+                    <span class="badge bg-success">GC-Rich</span>
+                    {% else %}
+                    <span class="badge bg-success">AT-Rich</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Enhanced Dataset Summary -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <div class="card metric-card h-100">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-database me-2"></i> Dataset Info
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-6">
+                  <h4 class="text-primary">{{ result.total_sequences }}</h4>
+                  <small>Total Sequences</small>
+                </div>
+                <div class="col-6">
+                  <h4 class="text-success">{{ result.labels|length }}</h4>
+                  <small>Classes</small>
+                </div>
+              </div>
+              <hr />
+              <div class="text-center">
+                <strong>Clustering Score:</strong>
+                <span class="stat-badge">{{ (result.clustering_score * 100)|round(1) }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card metric-card h-100">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-chart-line me-2"></i> Model Performance
+              </h6>
+            </div>
+            <div class="card-body">
+              {% for name, model in performance.items() %}
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span>{{ name }}</span>
+                <div>
+                  <span class="badge bg-primary">{{ (model.accuracy * 100)|round(1) }}%</span>
+                  <small class="text-muted">(CV: {{ (model.cv_mean * 100)|round(1) }}±{{ (model.cv_std * 100)|round(1) }}%)</small>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card metric-card h-100">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-chart-pie me-2"></i> Composition Analysis
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <strong>Average GC Content:</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-success">Promoters:</span>
+                <span>{{ result.composition_stats.promoter_gc_mean|round(1) }}%</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="text-danger">Non-Promoters:</span>
+                <span>{{ result.composition_stats.non_promoter_gc_mean|round(1) }}%</span>
+              </div>
+
+              <div>
+                <strong>Top Promoter Motifs:</strong>
+                <div class="mt-3">
+                  {% for motif, data in result.top_motifs.items() %}
+                  <span class="motif-display">{{ motif }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visualizations Section -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-project-diagram me-2"></i> Clustering & PCA
+                Visualization
+              </h6>
+            </div>
+            <div class="card-body text-center">
+              <img
+                src="data:image/png;base64,{{ plots.cluster_plot }}"
+                class="img-fluid visualization-img"
+                alt="Clustering Plot"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-chart-bar me-2"></i> Model Performance
+                Comparison
+              </h6>
+            </div>
+            <div class="card-body text-center">
+              <img
+                src="data:image/png;base64,{{ plots.performance_plot }}"
+                class="img-fluid visualization-img"
+                alt="Performance Plot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-table me-2"></i> Confusion Matrices
+              </h6>
+            </div>
+            <div class="card-body text-center">
+              <img
+                src="data:image/png;base64,{{ plots.confusion_matrix }}"
+                class="img-fluid visualization-img"
+                alt="Confusion Matrix"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fas fa-dna me-2"></i> Nucleotide Composition
+              </h6>
+            </div>
+            <div class="card-body text-center">
+              <img
+                src="data:image/png;base64,{{ plots.composition_analysis }}"
+                class="img-fluid visualization-img"
+                alt="Nucleotide Composition"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="fas fa-star me-2"></i> Feature Importance by Position
+          </h6>
+        </div>
+        <div class="card-body text-center">
+          <img
+            src="data:image/png;base64,{{ plots.feature_importance }}"
+            class="img-fluid visualization-img"
+            alt="Feature Importance"
+          />
+          <div class="mt-2 text-muted">
+            <small
+              >Red bars indicate the most important nucleotide positions for
+              classification</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Performance Table -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="fas fa-table me-2"></i> Detailed Performance Metrics
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover table-striped">
+              <thead>
+                <tr class="table-light">
+                  <th>Model</th>
+                  <th>Test Accuracy</th>
+                  <th>CV Accuracy</th>
+                  <th>Promoter Precision</th>
+                  <th>Promoter Recall</th>
+                  <th>Promoter F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for name, model in performance.items() %}
+                <tr {% if name == 'Ensemble' %}class="table-warning"{% endif %}>
+                  <td>
+                    <strong>{{ name }}</strong>
+                    {% if name == 'Ensemble' %}
+                    <small class="badge bg-warning text-dark">Best</small>
+                    {% endif %}
+                  </td>
+                  <td>{{ (model.accuracy * 100)|round(1) }}%</td>
+                  <td>{{ (model.cv_mean * 100)|round(1) }}% ± {{ (model.cv_std * 100)|round(1) }}%</td>
+                  <td>{{ (model.report['+']['precision'] * 100)|round(1) }}%</td>
+                  <td>{{ (model.report['+']['recall'] * 100)|round(1) }}%</td>
+                  <td>{{ (model.report['+']['f1-score'] * 100)|round(1) }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+<!-- Batch Prediction Modal -->
+      <div class="modal fade" id="batchModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                <i class="fas fa-chart-bar me-2"></i> Batch Sequence Prediction
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="batchForm">
+                <div class="mb-3">
+                  <label class="form-label"
+                    >DNA Sequences (one per line, max 50)</label
+                  >
+                  <textarea
+                    class="form-control sequence-input"
+                    id="batchSequences"
+                    name="sequences"
+                    rows="10"
+                    placeholder="Enter multiple 57-character DNA sequences, one per line...&#10;TACTAGCAATACGCTTGCGTTCGGTGGTTAAGTATGTATAATGCGCGGGCTTGTCGT&#10;AACGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"
+                  >
+                  </textarea>
+                  <div class="form-text mt-2">
+                    Enter up to 50 sequences, each exactly 57 characters long
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="batchSubmitBtn">
+                  <i class="fas fa-rocket me-2"></i>Predict All
+                </button>
+              </form>
+              
+              <!-- Loading indicator -->
+              <div id="batchLoading" class="mt-4" style="display: none;">
+                <div class="text-center">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p class="mt-2">Processing sequences...</p>
+                </div>
+              </div>
+              
+              <!-- Error display -->
+              <div id="batchError" class="alert alert-danger mt-4" style="display: none;">
+              </div>
+              
+              <!-- Results section -->
+              <div id="batchResults" class="mt-4" style="display: none;">
+                <h6>Results:</h6>
+                <div id="batchResultsContent">
+                  <!-- Results will be populated here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="text-center mt-5 py-4">
+        <div class="d-flex justify-content-center gap-3 mb-3">
+          <a href="#" class="text-primary"
+            ><i class="fab fa-github fa-lg"></i
+          ></a>
+          <a href="#" class="text-primary"
+            ><i class="fab fa-twitter fa-lg"></i
+          ></a>
+          <a href="#" class="text-primary"
+            ><i class="fab fa-linkedin fa-lg"></i
+          ></a>
+        </div>
+        <small
+          >🧬 Enhanced E. coli Promoter Sequence Classification using Advanced
+          Machine Learning</small
+        >
+        <div class="mt-2">
+          <small>© Designed by Malik Zeeshan</small>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Auto-uppercase nucleotides and show character count
+      const sequenceInput = document.querySelector(
+        'input[name="user_sequence"]'
+      );
+      const lengthDisplay = document.getElementById("sequence-length");
+      const sequenceCounter = document.getElementById("sequenceCounter");
+
+      if (sequenceInput) {
+        // Set initial counter value
+        sequenceCounter.textContent = `${sequenceInput.value.length}/57 characters`;
+        sequenceCounter.className = sequenceInput.value.length === 57 ? "text-success" : "text-muted";
+        
+        // Update counter as user types
+        sequenceInput.addEventListener("input", function (e) {
+          let value = e.target.value.toUpperCase().replace(/[^ACGT]/g, "");
+          e.target.value = value;
+          
+          sequenceCounter.textContent = `${value.length}/57 characters`;
+          sequenceCounter.className = value.length === 57 ? "text-success" : value.length > 57 ? "text-danger" : "text-muted";
+        });
+      }
+
+      // Batch prediction handling
+      document.getElementById("batchForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitBtn = document.getElementById('batchSubmitBtn');
+        const loadingDiv = document.getElementById('batchLoading');
+        const errorDiv = document.getElementById('batchError');
+        const resultsDiv = document.getElementById('batchResults');
+        const resultsContent = document.getElementById('batchResultsContent');
+        
+        // Hide previous results and errors
+        resultsDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
+        loadingDiv.style.display = 'block';
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        
+        fetch('/batch_predict', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          loadingDiv.style.display = 'none';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-rocket me-2"></i>Predict All';
+          
+          if (data.error) {
+            errorDiv.textContent = data.error;
+            errorDiv.style.display = 'block';
+          } else {
+            // Display results
+            displayBatchResults(data);
+            resultsDiv.style.display = 'block';
+          }
+        })
+        .catch(error => {
+          loadingDiv.style.display = 'none';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-rocket me-2"></i>Predict All';
+          
+          errorDiv.textContent = 'Network error: ' + error.message;
+          errorDiv.style.display = 'block';
+        });
+      });
+
+      function displayBatchResults(results) {
+        const resultsContent = document.getElementById('batchResultsContent');
+        
+        if (!results || results.length === 0) {
+          resultsContent.innerHTML = '<p class="text-muted">No results to display.</p>';
+          return;
+        }
+        
+        let html = '<div class="table-responsive mt-3"><table class="table table-sm table-striped"><thead><tr>';
+        html += '<th>#</th><th>Sequence</th><th>Ensemble Prediction</th><th>Confidence</th><th>GC%</th></tr></thead><tbody>';
+        
+        results.forEach(result => {
+          if (result.error) {
+            html += `<tr class="table-warning">`;
+            html += `<td>${result.sequence_id}</td>`;
+            html += `<td><code>${result.sequence ? result.sequence.substring(0, 20) + '...' : 'Invalid'}</code></td>`;
+            html += `<td colspan="3" class="text-danger">${result.error}</td>`;
+            html += `</tr>`;
+          } else {
+            const prediction = result.predictions?.Ensemble || 'Unknown';
+            const confidence = result.confidences?.Ensemble || 0;
+            const gcContent = result.composition?.GC_content || 0;
+            
+            const predictionClass = prediction === '+' || prediction === 'Promoter' ? 'text-success' : 'text-danger';
+            const predictionText = prediction === '+' ? 'Promoter' : prediction === '-' ? 'Non-Promoter' : prediction;
+            
+            html += `<tr>`;
+            html += `<td>${result.sequence_id}</td>`;
+            html += `<td><code>${result.sequence.substring(0, 20)}...</code></td>`;
+            html += `<td class="${predictionClass}"><strong>${predictionText}</strong></td>`;
+            html += `<td>${(confidence * 100).toFixed(1)}%</td>`;
+            html += `<td>${gcContent.toFixed(1)}%</td>`;
+            html += `</tr>`;
+          }
+        });
+        
+        html += '</tbody></table></div>';
+        resultsContent.innerHTML = html;
+      }
+
+      // Auto-format batch sequences
+      document.getElementById("batchSequences").addEventListener("input", function (e) {
+        const lines = e.target.value.split("\n");
+        const formatted = lines
+          .map((line) => line.toUpperCase().replace(/[^ACGT]/g, ""))
+          .join("\n");
+        if (formatted !== e.target.value) {
+          e.target.value = formatted;
+        }
+      });
+
+      // Add animations to metric cards on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".metric-card");
+        cards.forEach((card, index) => {
+          card.style.animationDelay = `${index * 0.1}s`;
+        });
+      });
+    </script>
+  </body>
+</html>
